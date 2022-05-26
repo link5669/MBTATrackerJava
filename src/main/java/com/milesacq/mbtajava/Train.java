@@ -33,4 +33,8 @@ public class Train {
         String arrivalTimeStr = (String) attributes.get("arrival_time");
         arrivalTime = new ArrivalTime(arrivalTimeStr);
     }
+
+    public String toString() {
+        return color + " " + arrivalTime;
+    }
 }
