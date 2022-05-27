@@ -1,7 +1,5 @@
 package com.milesacq.mbtajava;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -26,12 +24,17 @@ public class MainController implements Initializable {
     @FXML
     private ChoiceBox<String> stopPicker;
 
+    @FXML
+    private ChoiceBox<String> boundBox;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Color[] possibleValues = Color.RED.getDeclaringClass().getEnumConstants();
         for (Color possibleValue : possibleValues) {
             linePicker.getItems().add(possibleValue.toString());
         }
+        boundBox.getItems().add("Inbound");
+        boundBox.getItems().add("Outbound");
         SingletonStops stops = new SingletonStops();
         linePicker.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> checkStopPicker(Color.values()[t1.intValue()]));
     }
@@ -57,7 +60,15 @@ public class MainController implements Initializable {
     @FXML
     protected void onRefreshButtonClick() {
         StringBuilder output = new StringBuilder();
-        JSONObject jsonDocument = (JSONObject) JSONValue.parse(getData(MBTAApplication.getStopData().getStopID(stopPicker.getValue())));
+        String idString;
+        if (boundBox.getValue().equals("Inbound")) {
+            int idInt = Integer.parseInt(MBTAApplication.getStopData().getStopID(stopPicker.getValue()));
+            idInt++;
+            idString = String.valueOf(idInt);
+        } else {
+            idString = MBTAApplication.getStopData().getStopID(stopPicker.getValue());
+        }
+        JSONObject jsonDocument = (JSONObject) JSONValue.parse(getData(idString));
         JSONArray jsonArr = (JSONArray) jsonDocument.get("data");
         for (Object o : jsonArr) {
             JSONObject curr = (JSONObject) o;
