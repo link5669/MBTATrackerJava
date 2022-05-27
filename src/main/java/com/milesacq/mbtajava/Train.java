@@ -35,6 +35,6 @@ public class Train {
     }
 
     public String toString() {
-        return color + " " + arrivalTime;
+        return color + " arrives at Hynes at " + arrivalTime;
     }
 }
