@@ -33,13 +33,7 @@ public class MainController implements Initializable {
             linePicker.getItems().add(possibleValue.toString());
         }
         SingletonStops stops = new SingletonStops();
-        System.out.println(stops);
-        linePicker.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                checkStopPicker(Color.values()[t1.intValue()]);
-            }
-        });
+        linePicker.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> checkStopPicker(Color.values()[t1.intValue()]));
     }
 
     private void checkStopPicker(Color color) {
@@ -63,21 +57,36 @@ public class MainController implements Initializable {
     @FXML
     protected void onRefreshButtonClick() {
         StringBuilder output = new StringBuilder();
-        JSONObject jsonDocument = (JSONObject) JSONValue.parse(getData());
+        JSONObject jsonDocument = (JSONObject) JSONValue.parse(getData(MBTAApplication.getStopData().getStopID(stopPicker.getValue())));
         JSONArray jsonArr = (JSONArray) jsonDocument.get("data");
         for (Object o : jsonArr) {
             JSONObject curr = (JSONObject) o;
-            Train train = new Train(curr);
+            Object relationship = curr.get("relationships");
+            JSONObject rel = (JSONObject) relationship;
+            JSONObject routeData = (JSONObject) rel.get("route");
+            JSONObject data = (JSONObject) routeData.get("data");
+            String id = (String) data.get("id");
+            JSONObject attributes = (JSONObject) curr.get("attributes");
+            String arrivalTimeStr = (String) attributes.get("arrival_time");
+            Long directionId = (Long) attributes.get("direction_id");
+            boolean direction;
+            direction = directionId == 1;
+            Train train;
+            if (id.equals("Green")) {
+                train = new GreenTrain(id, arrivalTimeStr, direction);
+            } else {
+                train = new Train(id, arrivalTimeStr, direction);
+            }
             output.append(train).append("\n");
         }
         welcomeText.setText(output.toString());
     }
 
 
-    private String getData() {
+    private String getData(String id) {
         String output = "";
         try {
-            URL url = new URL("https://api-v3.mbta.com/predictions?filter[stop]=70153&sort=arrival_time");
+            URL url = new URL("https://api-v3.mbta.com/predictions?filter[stop]=" + id + "&sort=arrival_time");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

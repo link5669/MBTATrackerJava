@@ -1,3 +1,6 @@
 package com.milesacq.mbtajava;
 
-public enum Color {GREEN, ORANGE, RED, BLUE}
+public enum Color {
+    GREEN, ORANGE, RED, BLUE
+}
+
