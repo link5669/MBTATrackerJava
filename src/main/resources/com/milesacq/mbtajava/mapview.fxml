@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+
+
+<AnchorPane prefHeight="463.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.milesacq.mbtajava.MapController">
+   <children>
+      <Line endX="-235.09548950195312" endY="-246.45706176757812" layoutX="281.0" layoutY="325.0" startX="440.98406982421875" startY="-246.45706176757812" stroke="#ee963f" strokeWidth="8.0" />
+      <Line endX="-235.09548950195312" endY="-246.45706176757812" layoutX="281.0" layoutY="389.0" startX="440.98406982421875" startY="-246.45706176757812" stroke="#3782c3" strokeWidth="8.0" />
+      <Circle fill="WHITE" layoutX="42.0" layoutY="142.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="wonderland" fill="WHITE" layoutX="726.0" layoutY="144.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
+   </children>
+</AnchorPane>
