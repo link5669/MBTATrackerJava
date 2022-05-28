@@ -1,10 +1,13 @@
 package com.milesacq.mbtajava;
 
+import javafx.scene.shape.Circle;
+
 public class Train {
     private Color color;
     //TRUE is inbound, FALSE is outbound
     private boolean direction;
     private ArrivalTime arrivalTime;
+    private Circle circle;
 
     public Train(String id,String arrivalTimeStr, boolean directionId) {
         direction = directionId;
@@ -18,6 +21,10 @@ public class Train {
             }
         }
         arrivalTime = new ArrivalTime(arrivalTimeStr);
+    }
+
+    public void setCircle(Circle circle) {
+        this.circle = circle;
     }
 
     public String toString() {
