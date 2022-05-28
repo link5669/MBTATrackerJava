@@ -63,7 +63,7 @@ public class MainController implements Initializable {
         String idString;
         if (boundBox.getValue().equals("Inbound")) {
             int idInt = Integer.parseInt(MBTAApplication.getStopData().getStopID(stopPicker.getValue()));
-            idInt++;
+            idInt--;
             idString = String.valueOf(idInt);
         } else {
             idString = MBTAApplication.getStopData().getStopID(stopPicker.getValue());
