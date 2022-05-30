@@ -49,7 +49,7 @@ public class MainController implements Initializable {
 
     @FXML
     protected void onRefreshButtonClick() {
-        welcomeText.setText(MBTAApplication.getTrainData(stopPicker, boundBox).toString());
+        welcomeText.setText(MBTAApplication.getTrainData(stopPicker, boundBox));
     }
 
 

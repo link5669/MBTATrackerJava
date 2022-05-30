@@ -14,7 +14,7 @@ import java.util.HashSet;
 public class SingletonStops {
     private static final HashSet<Stop> allStops = new HashSet<>();
 
-    public SingletonStops() {
+    private String getStopData() {
         String output = "";
         try {
             URL url = new URL("https://api-v3.mbta.com/stops?sort=name");
@@ -32,7 +32,24 @@ public class SingletonStops {
         } catch (Exception e) {
             System.out.println("Exception in NetClientGet:- " + e);
         }
+        return output;
+    }
 
+    private Color getStopColor(String description) {
+        Color color = null;
+        if (description.contains("Orange")) {
+            return  Color.ORANGE;
+        } else if (description.contains("Red")) {
+            return Color.RED;
+        } else if (description.contains("Blue")) {
+            return Color.BLUE;
+        } else {
+            return Color.GREEN;
+        }
+    }
+
+    public SingletonStops() {
+        String output = getStopData();
         JSONObject allData = (JSONObject) JSONValue.parse(output);
         JSONArray array = (JSONArray) allData.get("data");
         for (Object o : array) {
@@ -53,30 +70,17 @@ public class SingletonStops {
             if (description == null) {
                 continue;
             }
-            description = description.trim();
-            if (description.contains("Track")) {
-                int index = description.indexOf(" - Track");
-                description = description.substring(0, index);
+            if (description.contains("Exit")) {
+                continue;
             }
+            description = description.trim();
             if (description.contains("Line - ")) {
                 int index = description.indexOf("Line - ");
                 description = description.substring(0, index);
                 description = description + "Line";
             }
-            if (description.contains("Exit")) {
-                continue;
-            }
             if (id.equals("RapidTransit")) {
-                Color color = null;
-                if (description.contains("Orange")) {
-                    color = Color.ORANGE;
-                } else if (description.contains("Red")) {
-                    color = Color.RED;
-                } else if (description.contains("Blue")) {
-                    color = Color.BLUE;
-                } else if (description.contains("Green")) {
-                    color = Color.GREEN;
-                }
+                Color color = getStopColor(description);
                 Stop stop = new Stop(description, color, idNum);
                 allStops.add(stop);
             }

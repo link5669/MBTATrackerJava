@@ -39,8 +39,7 @@ public class MBTAApplication extends javafx.application.Application {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP Error code : "
-                        + conn.getResponseCode());
+                throw new RuntimeException("Failed : HTTP Error code : " + conn.getResponseCode());
             }
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
             BufferedReader br = new BufferedReader(in);
@@ -52,8 +51,7 @@ public class MBTAApplication extends javafx.application.Application {
         return output;
     }
 
-    public static StringBuilder getTrainData(ChoiceBox<String> stopPicker, ChoiceBox<String> boundBox) {
-        StringBuilder output = new StringBuilder();
+    private static String getStopID(ChoiceBox<String> boundBox, ChoiceBox<String> stopPicker) {
         String idString;
         if (boundBox.getValue().equals("Inbound")) {
             int idInt = Integer.parseInt(MBTAApplication.getStopData().getStopID(stopPicker.getValue()));
@@ -62,28 +60,39 @@ public class MBTAApplication extends javafx.application.Application {
         } else {
             idString = MBTAApplication.getStopData().getStopID(stopPicker.getValue());
         }
+        return idString;
+    }
+
+    private static Train getTrain(JSONObject curr) {
+        Object relationship = curr.get("relationships");
+        JSONObject rel = (JSONObject) relationship;
+        JSONObject routeData = (JSONObject) rel.get("route");
+        JSONObject data = (JSONObject) routeData.get("data");
+        String id = (String) data.get("id");
+        JSONObject attributes = (JSONObject) curr.get("attributes");
+        String arrivalTimeStr = (String) attributes.get("arrival_time");
+        Long directionId = (Long) attributes.get("direction_id");
+        boolean direction;
+        direction = directionId == 1;
+        Train train;
+        if (id.equals("Green")) {
+            train = new GreenTrain(id, arrivalTimeStr, direction);
+        } else {
+            train = new Train(id, arrivalTimeStr, direction);
+        }
+        return train;
+    }
+
+    public static String getTrainData(ChoiceBox<String> stopPicker, ChoiceBox<String> boundBox) {
+        StringBuilder output = new StringBuilder();
+        String idString = getStopID(boundBox, stopPicker);
         JSONObject jsonDocument = (JSONObject) JSONValue.parse(MBTAApplication.getData(idString));
         JSONArray jsonArr = (JSONArray) jsonDocument.get("data");
         for (Object o : jsonArr) {
             JSONObject curr = (JSONObject) o;
-            Object relationship = curr.get("relationships");
-            JSONObject rel = (JSONObject) relationship;
-            JSONObject routeData = (JSONObject) rel.get("route");
-            JSONObject data = (JSONObject) routeData.get("data");
-            String id = (String) data.get("id");
-            JSONObject attributes = (JSONObject) curr.get("attributes");
-            String arrivalTimeStr = (String) attributes.get("arrival_time");
-            Long directionId = (Long) attributes.get("direction_id");
-            boolean direction;
-            direction = directionId == 1;
-            Train train;
-            if (id.equals("Green")) {
-                train = new GreenTrain(id, arrivalTimeStr, direction);
-            } else {
-                train = new Train(id, arrivalTimeStr, direction);
-            }
+            Train train = getTrain(curr);
             output.append(train).append("\n");
         }
-        return output;
+        return output.toString();
     }
 }
