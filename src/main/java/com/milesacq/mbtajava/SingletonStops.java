@@ -109,4 +109,13 @@ public class SingletonStops {
         }
         return null;
     }
+
+    public Stop getStop(String stopIn) {
+        for (Stop stop : allStops) {
+            if (stop.toString().equals(stopIn)) {
+                return stop;
+            }
+        }
+        return null;
+    }
 }

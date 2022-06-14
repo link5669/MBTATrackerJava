@@ -11,12 +11,13 @@ import org.json.simple.JSONValue;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MBTAApplication extends javafx.application.Application {
     private static SingletonStops stopData = new SingletonStops();
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MBTAApplication.class.getResource("listview.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MBTAApplication.class.getResource("mapview.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1820, 640);
         stage.setTitle("MBTA Tracker");
         stage.setScene(scene);
@@ -83,16 +84,17 @@ public class MBTAApplication extends javafx.application.Application {
         return train;
     }
 
-    public static String getTrainData(ChoiceBox<String> stopPicker, ChoiceBox<String> boundBox) {
+    public static ArrayList<Train> getTrainData(ChoiceBox<String> stopPicker, ChoiceBox<String> boundBox) {
         StringBuilder output = new StringBuilder();
         String idString = getStopID(boundBox, stopPicker);
         JSONObject jsonDocument = (JSONObject) JSONValue.parse(MBTAApplication.getData(idString));
         JSONArray jsonArr = (JSONArray) jsonDocument.get("data");
+        ArrayList<Train> trains = new ArrayList<Train>();
         for (Object o : jsonArr) {
             JSONObject curr = (JSONObject) o;
             Train train = getTrain(curr);
-            output.append(train).append("\n");
+            trains.add(train);
         }
-        return output.toString();
+        return trains;
     }
 }

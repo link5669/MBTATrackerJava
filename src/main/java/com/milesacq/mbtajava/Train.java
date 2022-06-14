@@ -23,6 +23,10 @@ public class Train {
         arrivalTime = new ArrivalTime(arrivalTimeStr);
     }
 
+    public ArrivalTime getArrivalTime() {
+        return this.arrivalTime;
+    }
+
     public void setCircle(Circle circle) {
         this.circle = circle;
     }

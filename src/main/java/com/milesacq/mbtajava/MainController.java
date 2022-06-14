@@ -6,6 +6,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -49,9 +50,12 @@ public class MainController implements Initializable {
 
     @FXML
     protected void onRefreshButtonClick() {
-        welcomeText.setText(MBTAApplication.getTrainData(stopPicker, boundBox));
+        ArrayList<Train> trains = MBTAApplication.getTrainData(stopPicker, boundBox);
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < trains.size(); i++) {
+            output.append(trains.get(i));
+            output.append("\n");
+        }
+        welcomeText.setText(output.toString());
     }
-
-
-
 }
